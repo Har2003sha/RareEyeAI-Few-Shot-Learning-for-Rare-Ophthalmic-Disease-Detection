@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-4">
+  <h3 class="fw-bold mb-2"><i class="bi bi-collection text-accent"></i> Few-Shot Support Set</h3>
+  <p class="text-muted mb-4">
+    These are the {{ k_shot }}-shot support images per class used to compute each class prototype
+    (mean embedding). This demo ships with a procedurally generated support set — replace the images in
+    <code>static/support_set/&lt;class_name&gt;/</code> with real, clinically-sourced fundus photographs to
+    move from demo to production.
+  </p>
+
+  {% for cls, images in data.items() %}
+  <div class="card-soft p-4 mb-4">
+    <h6 class="fw-bold mb-3">{{ cls }} <span class="text-muted small">({{ images|length }} support images)</span></h6>
+    <div class="row g-3">
+      {% for img in images %}
+      <div class="col-6 col-md-2">
+        <img src="{{ url_for('static', filename=img) }}" class="support-thumb">
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

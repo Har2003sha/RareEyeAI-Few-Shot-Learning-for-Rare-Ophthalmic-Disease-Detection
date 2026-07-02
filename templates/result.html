@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-4">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h3 class="fw-bold mb-0"><i class="bi bi-clipboard2-pulse text-accent"></i> Analysis Result</h3>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('download_report', prediction_id=prediction.id) }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark-pdf"></i> Download PDF Report</a>
+      <a href="{{ url_for('upload') }}" class="btn btn-accent btn-sm"><i class="bi bi-plus-circle"></i> New Analysis</a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card-soft p-3 result-image-box">
+        <h6 class="fw-bold mb-2"><i class="bi bi-image"></i> Original Retinal Image</h6>
+        <img src="{{ url_for('static', filename='uploads/' + prediction.original_image) }}" alt="original">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card-soft p-3 result-image-box">
+        <h6 class="fw-bold mb-2"><i class="bi bi-thermometer-half"></i> Grad-CAM Attention Overlay</h6>
+        <img src="{{ url_for('static', filename='heatmaps/' + prediction.heatmap_image) }}" alt="gradcam">
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-md-5">
+      <div class="card-soft p-4 text-center h-100 d-flex flex-column justify-content-center">
+        <h6 class="fw-bold mb-3">Predicted Class</h6>
+        <span class="badge-class mx-auto mb-3">{{ prediction.predicted_class }}</span>
+        <div id="confidenceRing" class="confidence-ring rounded-circle mx-auto d-flex align-items-center justify-content-center" data-pct="{{ (prediction.confidence*100)|round(1) }}">
+          <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width:110px;height:110px;">
+            <div>
+              <div class="fw-bold fs-4">{{ (prediction.confidence*100)|round(1) }}%</div>
+              <div class="text-muted small">confidence</div>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted small mt-3 mb-0">{{ prediction.n_way }}-way {{ prediction.k_shot }}-shot episode</p>
+      </div>
+    </div>
+
+    <div class="col-md-7">
+      <div class="card-soft p-4 h-100">
+        <h6 class="fw-bold mb-3">Class Probability Breakdown</h6>
+        <table class="table table-prob mb-0">
+          <tbody>
+          {% for cls, p in sorted_probs %}
+            <tr>
+              <td style="width:38%;" class="small fw-semibold">{{ cls }}</td>
+              <td>
+                <div class="progress progress-thin">
+                  <div class="progress-bar {{ 'bg-success' if loop.first else 'bg-info' }} animated-bar" style="width:0%" data-width="{{ (p*100)|round(2) }}"></div>
+                </div>
+              </td>
+              <td style="width:70px;" class="text-end small">{{ (p*100)|round(2) }}%</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-12">
+      <div class="card-soft p-4">
+        <h6 class="fw-bold mb-3"><i class="bi bi-rulers"></i> Embedding Distance to Each Prototype</h6>
+        <div class="row">
+        {% for cls, dist in distances.items() %}
+          <div class="col-md-4 mb-2 small">
+            <span class="fw-semibold">{{ cls }}:</span> {{ "%.4f"|format(dist) }}
+          </div>
+        {% endfor %}
+        </div>
+        <p class="text-muted small mb-0 mt-2">Lower distance = higher similarity to that class's prototype embedding (mean of {{ prediction.k_shot }} support examples).</p>
+      </div>
+    </div>
+  </div>
+
+  {% if prediction.notes %}
+  <div class="card-soft p-4 mt-4">
+    <h6 class="fw-bold mb-2">Clinical Notes</h6>
+    <p class="mb-0 text-muted">{{ prediction.notes }}</p>
+  </div>
+  {% endif %}
+
+  <div class="alert alert-warning mt-4 small">
+    <i class="bi bi-exclamation-triangle"></i> This is a research/demonstration prediction generated from a
+    synthetic demo support set. It is <strong>not</strong> a clinical diagnosis. Always confirm findings with
+    a qualified ophthalmologist.
+  </div>
+</div>
+{% endblock %}

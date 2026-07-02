@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="text-center mb-4">
+        <h3 class="fw-bold">Run a New Few-Shot Analysis</h3>
+        <p class="text-muted">Upload a retinal fundus image to classify it against {{ classes|length }} rare disease prototypes.</p>
+      </div>
+
+      <div class="card-soft p-4 p-md-5">
+        <form method="POST" enctype="multipart/form-data" id="uploadForm" novalidate>
+          {{ form.hidden_tag() }}
+
+          <div class="upload-drop mb-4" id="uploadDrop">
+            <i class="bi bi-cloud-arrow-up fs-1 text-accent"></i>
+            <p class="fw-semibold mb-1 mt-2">Drag & drop a retinal image here</p>
+            <p class="text-muted small mb-0">or click to browse &middot; JPG, PNG, TIFF up to 10MB</p>
+            {{ form.image(class="d-none", id="image") }}
+          </div>
+          {% for err in form.image.errors %}<div class="text-danger small mb-3">{{ err }}</div>{% endfor %}
+
+          <div id="previewWrap" class="text-center mb-4 d-none">
+            <img id="previewImg" src="" alt="preview">
+          </div>
+
+          <div class="mb-3">
+            {{ form.patient_ref.label(class="form-label fw-semibold") }}
+            {{ form.patient_ref(class="form-control", placeholder="e.g. CASE-2026-0042") }}
+          </div>
+
+          <div class="mb-4">
+            {{ form.notes.label(class="form-label fw-semibold") }}
+            {{ form.notes(class="form-control", rows="3", placeholder="Any relevant clinical observations...") }}
+          </div>
+
+          {{ form.submit(class="btn btn-accent w-100 py-2 fw-semibold") }}
+        </form>
+      </div>
+
+      <div class="alert alert-secondary mt-4 small">
+        <i class="bi bi-cpu"></i> The image will be embedded with a Prototypical Network CNN encoder, compared
+        to precomputed class prototypes ({{ classes|length }}-way, 5-shot), and explained with a Grad-CAM
+        attention overlay.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="spinner-overlay" id="spinnerOverlay">
+  <div class="spinner-border text-light" style="width:3.5rem;height:3.5rem;" role="status"></div>
+  <div class="fw-semibold">Running few-shot inference & Grad-CAM...</div>
+</div>
+{% endblock %}

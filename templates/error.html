@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container text-center my-5 py-5">
+  <div class="display-1 fw-bold text-accent">{{ code }}</div>
+  <p class="lead text-muted">{{ message }}</p>
+  <a href="{{ url_for('index') }}" class="btn btn-accent mt-3">Go Home</a>
+</div>
+{% endblock %}

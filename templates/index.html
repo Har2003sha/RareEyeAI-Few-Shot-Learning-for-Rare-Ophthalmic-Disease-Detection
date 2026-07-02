@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <div class="eyebrow mb-2">Few-Shot Learning &middot; Prototypical Networks &middot; Grad-CAM</div>
+        <h1 class="display-5 fw-bold display-font mb-3">Detecting Rare Ophthalmic Diseases from Just a Handful of Examples</h1>
+        <p class="lead" style="color:#d9e6f0;">
+          RareEyeAI uses a Prototypical Network to classify retinal fundus images into rare eye disease
+          categories using only a small (K-shot) support set per class — with visual Grad-CAM style
+          explanations for every prediction.
+        </p>
+        <div class="d-flex gap-3 mt-4 flex-wrap">
+          {% if current_user.is_authenticated %}
+            <a href="{{ url_for('upload') }}" class="btn btn-accent btn-lg px-4"><i class="bi bi-cloud-upload"></i> Run New Analysis</a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-lg px-4">Go to Dashboard</a>
+          {% else %}
+            <a href="{{ url_for('register') }}" class="btn btn-accent btn-lg px-4"><i class="bi bi-rocket-takeoff"></i> Get Started Free</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">Log In</a>
+          {% endif %}
+        </div>
+        <div class="mt-4">
+          {% for c in classes %}<span class="class-chip"><i class="bi bi-dot"></i>{{ c }}</span>{% endfor %}
+        </div>
+      </div>
+      <div class="col-lg-5 d-flex justify-content-center">
+        <div class="retina-badge"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card-soft p-4 h-100">
+        <div class="step-num mb-3">1</div>
+        <h5 class="fw-bold">Upload a Fundus Image</h5>
+        <p class="text-muted mb-0">Upload a retinal photograph through a simple drag-and-drop interface. JPG, PNG, TIFF supported.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card-soft p-4 h-100">
+        <div class="step-num mb-3">2</div>
+        <h5 class="fw-bold">Prototypical Network Inference</h5>
+        <p class="text-muted mb-0">The CNN encoder embeds your image and compares it to class prototypes built from a K-shot support set for each rare disease.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card-soft p-4 h-100">
+        <div class="step-num mb-3">3</div>
+        <h5 class="fw-bold">Grad-CAM Explanation + Report</h5>
+        <p class="text-muted mb-0">Get a predicted class, confidence score, class-probability breakdown, a visual attention heatmap, and a downloadable PDF report.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container mb-5">
+  <div class="card-soft p-4 p-md-5">
+    <div class="row align-items-center g-4">
+      <div class="col-md-7">
+        <h4 class="fw-bold mb-2"><i class="bi bi-diagram-3 text-accent"></i> Why Few-Shot Learning?</h4>
+        <p class="text-muted mb-0">
+          Rare ophthalmic diseases, by definition, have very few labelled patient images available for
+          training. Traditional deep learning needs thousands of examples per class. Prototypical Networks
+          instead learn a general-purpose embedding space where each class is represented by a single
+          "prototype" &mdash; the mean embedding of a handful of support examples &mdash; enabling
+          reliable classification from as few as 1&ndash;5 images per rare disease class.
+        </p>
+      </div>
+      <div class="col-md-5">
+        <div class="alert alert-info mb-0">
+          <i class="bi bi-info-circle"></i>
+          This deployment ships with a procedurally generated demo support set so the full pipeline runs
+          out-of-the-box. See the <strong>Support Set</strong> page (after login) and the project README for
+          instructions on plugging in a real, clinically-sourced rare-disease dataset.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

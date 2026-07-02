@@ -1,0 +1,14 @@
+Flask==3.0.3
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+WTForms==3.1.2
+email_validator==2.2.0
+Werkzeug==3.0.3
+Pillow==10.4.0
+numpy==1.26.4
+reportlab==4.2.2
+torch>=2.2
+torchvision>=0.17
+gunicorn==22.0.0
+psycopg2-binary==2.9.9

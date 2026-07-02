@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+      <h3 class="fw-bold mb-1">Welcome, {{ current_user.full_name }} 👋</h3>
+      <p class="text-muted mb-0">Here's an overview of your few-shot rare disease analyses.</p>
+    </div>
+    <a href="{{ url_for('upload') }}" class="btn btn-accent"><i class="bi bi-plus-circle"></i> New Analysis</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-sm-4">
+      <div class="stat-card">
+        <div class="text-muted small">Total Analyses</div>
+        <div class="num">{{ total }}</div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="stat-card">
+        <div class="text-muted small">Rare Disease Classes</div>
+        <div class="num">{{ classes|length }}</div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="stat-card">
+        <div class="text-muted small">Few-Shot Setting</div>
+        <div class="num">5-way 5-shot</div>
+      </div>
+    </div>
+  </div>
+
+  {% if class_counts %}
+  <div class="card-soft p-4 mb-4">
+    <h6 class="fw-bold mb-3">Prediction Distribution</h6>
+    {% for cls, count in class_counts.items() %}
+      <div class="mb-2">
+        <div class="d-flex justify-content-between small mb-1">
+          <span>{{ cls }}</span><span>{{ count }}</span>
+        </div>
+        <div class="progress progress-thin">
+          <div class="progress-bar bg-success" style="width: {{ (count/total*100)|round(1) }}%"></div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0">Recent Analyses</h5>
+    <a href="{{ url_for('history') }}" class="small">View all &rarr;</a>
+  </div>
+
+  {% if recent %}
+  <div class="row g-3">
+    {% for p in recent %}
+    <div class="col-md-4">
+      <div class="card-soft p-3 h-100">
+        <img src="{{ url_for('static', filename='uploads/' + p.original_image) }}" class="w-100 mb-2" style="height:140px;object-fit:cover;border-radius:10px;">
+        <div class="fw-semibold small">{{ p.predicted_class }}</div>
+        <div class="text-muted small mb-2">{{ (p.confidence*100)|round(1) }}% confidence &middot; {{ p.created_at.strftime('%b %d, %Y') }}</div>
+        <a href="{{ url_for('result', prediction_id=p.id) }}" class="btn btn-sm btn-outline-primary w-100">View Result</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card-soft p-5 text-center">
+    <i class="bi bi-images fs-1 text-muted"></i>
+    <p class="mt-3 mb-3 text-muted">No analyses yet. Upload your first retinal image to get started.</p>
+    <a href="{{ url_for('upload') }}" class="btn btn-accent">Run New Analysis</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

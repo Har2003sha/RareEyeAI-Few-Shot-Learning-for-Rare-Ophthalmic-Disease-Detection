@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container auth-wrap">
+  <div class="card-soft auth-card p-4 p-md-5 w-100">
+    <div class="text-center mb-4">
+      <i class="bi bi-eye-fill fs-1 text-accent"></i>
+      <h3 class="fw-bold mt-2">Create Your Account</h3>
+      <p class="text-muted">Join RareEyeAI to start running few-shot rare disease analyses.</p>
+    </div>
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        {{ form.full_name.label(class="form-label fw-semibold") }}
+        {{ form.full_name(class="form-control" + (" is-invalid" if form.full_name.errors else ""), placeholder="Dr. Jane Doe") }}
+        {% for err in form.full_name.errors %}<div class="invalid-feedback">{{ err }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        {{ form.email.label(class="form-label fw-semibold") }}
+        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="you@hospital.org") }}
+        {% for err in form.email.errors %}<div class="invalid-feedback">{{ err }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        {{ form.password.label(class="form-label fw-semibold") }}
+        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="At least 6 characters") }}
+        {% for err in form.password.errors %}<div class="invalid-feedback">{{ err }}</div>{% endfor %}
+      </div>
+      <div class="mb-4">
+        {{ form.confirm_password.label(class="form-label fw-semibold") }}
+        {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else "")) }}
+        {% for err in form.confirm_password.errors %}<div class="invalid-feedback">{{ err }}</div>{% endfor %}
+      </div>
+      {{ form.submit(class="btn btn-accent w-100 py-2 fw-semibold") }}
+    </form>
+    <p class="text-center mt-4 mb-0 text-muted">
+      Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
